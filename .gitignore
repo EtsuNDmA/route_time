@@ -1,0 +1,5 @@
+.secrets
+*.py[cod]
+
+# PyCharm IDE
+.idea

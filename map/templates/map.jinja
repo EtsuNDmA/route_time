@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Быстрый старт. Размещение интерактивной карты на странице</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-duration-format/1.3.0/moment-duration-format.min.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey={{ yamaps_apikey }}&lang=ru_RU"
+            type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        ymaps.ready(init);
+
+        function init() {
+            var myMap = new ymaps.Map('map', {
+                center: [55.76, 37.64],
+                zoom: 12,
+                controls: []
+            });
+            // Создадим элемент управления "Пробки".
+            var trafficControl = new ymaps.control.TrafficControl({
+                state: {
+                    // Отображаются пробки "Сейчас".
+                    providerKey: 'traffic#actual',
+                    // Начинаем сразу показывать пробки на карте.
+                    trafficShown: true
+                }
+            });
+            // Добавим контрол на карту.
+            myMap.controls.add(trafficControl);
+            // Получим ссылку на провайдер пробок "Сейчас" и включим показ инфоточек.
+            trafficControl.getProvider('traffic#actual').state.set('infoLayerShown', true);
+
+            let fromPoint = '{{ route.from_address }}';
+            let toPoint = '{{ route.to_address }}';
+
+            async function addRoute(fromPoint) {
+                console.log('Adding route ...');
+                if (!fromPoint) {
+                    fromPoint = await ymaps.geolocation.get({autoReverseGeocode: false})
+                        .then(result => {
+                            return result.geoObjects.position
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                        });
+                }
+
+                return ymaps.route([fromPoint, toPoint], {multiRoute: false, avoidTrafficJams: true})
+                    .then(route => {
+                        route.options.set("mapStateAutoApply", true);
+                        myMap.geoObjects.add(route);
+                        console.log('... added route');
+                        return route;
+                    })
+                    .catch(err => console.error(err));
+            }
+
+            async function getRouteTime(route) {
+                route = await route;
+                return route.getJamsTime()
+            }
+
+            let route = addRoute(fromPoint);
+            let routeTime = getRouteTime(route);
+
+            (async function () {
+                let time = await routeTime;
+                let div = document.createElement('div');
+                console.info('Rout time is', time);
+
+                div.id = "routeTimeSeconds";
+                div.innerHTML = time;
+                document.body.appendChild(div);
+            })();
+        }
+    </script>
+</head>
+
+<body>
+<div style="display: flex;flex-direction: row;">
+    <div id="map" style="display: block; width:100%; height: 600px;"></div>
+</div>
+</body>
+
+</html>
