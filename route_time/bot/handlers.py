@@ -124,7 +124,7 @@ def show_route(update, context):
         if is_reversed:
             from_, to_ = to_, from_
         update.effective_message.reply_text(
-            f'Маршрут: {from_} -> {to_}'
+            f'Маршрут: {from_} -> {to_}\n'
             f'Дорога займет {route_time}'
         )
         update.effective_message.reply_photo(map_screenshot)
