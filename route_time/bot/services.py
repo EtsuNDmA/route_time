@@ -127,4 +127,4 @@ class RouteTime(object):
             logger.error(f'Requested resource {url}', exc_info=True)
             return None, None, 'Сервис недоступен 😲'
 
-        return route_time, self._map_screenshot
+        return route_time, self._map_screenshot, error

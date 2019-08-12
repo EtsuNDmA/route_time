@@ -1,14 +1,13 @@
 import functools
 import logging
 import re
-from collections import defaultdict
 
 from telegram import InlineKeyboardButton as button, InlineKeyboardMarkup, ReplyKeyboardMarkup
-from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, MessageHandler
 
 from . import services
 from .bot_updater import bot_updater
-from .utils import pretty_time_delta, routes_to_list, safe, clear_keyboard
+from .utils import clear_keyboard, pretty_time_delta, routes_to_list, safe
 
 logger = logging.getLogger(__name__)
 
