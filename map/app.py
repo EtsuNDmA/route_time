@@ -26,6 +26,7 @@ class MongoJSONEncoder(json.JSONEncoder):
 
 app = Flask(__name__)
 
+# TODO move to settings
 app.logger.setLevel(logging.DEBUG)
 
 app.config['DEBUG'] = True
