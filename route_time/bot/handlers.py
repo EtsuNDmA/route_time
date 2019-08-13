@@ -6,8 +6,17 @@ from telegram import InlineKeyboardButton as button, InlineKeyboardMarkup, Reply
 from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, MessageHandler
 
 from . import services
-from .bot_updater import bot_updater
+from .updater import bot_updater
 from .utils import clear_keyboard, pretty_time_delta, routes_to_list, safe
+
+
+__all__ = [
+    'start_handler',
+    'help_handler',
+    'conv_handler',
+    'fallback'
+]
+
 
 logger = logging.getLogger(__name__)
 
@@ -261,5 +270,4 @@ conv_handler = ConversationHandler(
 dispatcher.add_handler(start_handler)
 dispatcher.add_handler(help_handler)
 dispatcher.add_handler(conv_handler)
-
 dispatcher.add_error_handler(fallback)

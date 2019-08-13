@@ -1,7 +1,9 @@
 import logging
 
-from route_time.bot import bot_updater
+from route_time.bot.handlers import *
+from route_time.bot.updater import bot_updater
 
+# TODO move to config
 logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
