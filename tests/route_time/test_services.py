@@ -1,9 +1,7 @@
 from unittest.mock import MagicMock, patch
-import sys;
 
 import pytest
 
-print(sys.path)
 from route_time.bot import services
 
 
@@ -29,12 +27,11 @@ def empty_response():
 
 
 def test_list_routes_not_found(error_response, empty_response):
+    """Check service response with error or with empty list of routes"""
     with patch('requests.get', return_value=error_response()):
-        res = services.list_routes(1)
-        res_data, res_error = res
-        assert res_data == []
-        assert res_error
+        res = services.list_routes(user_id=1)
+        _check_response_with_error(res)
 
     with patch('requests.get', return_value=empty_response()):
-        res = services.list_routes(1)
+        res = services.list_routes(user_id=1)
         _check_response_with_error(res)
