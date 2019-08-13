@@ -1,2 +1,2 @@
-from .handlers import *
-from .bot_updater import bot_updater
+# from .handlers import *
+# from .bot_updater import bot_updater
