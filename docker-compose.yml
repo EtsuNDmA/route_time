@@ -5,54 +5,58 @@ services:
     image: mongo
     container_name: bot_mongo
     ports:
-    - "27017:27017"
+      - "27017:27017"
     volumes:
-    - mongo-data:/data/db
-#    environment:
-#    - MONGO_INITDB_ROOT_USERNAME=admin
-#    - MONGO_INITDB_ROOT_PASSWORD=123
-#    - MONGO_INITDB_DATABASE=mainDB
+      - mongo-data:/data/db
+  #    environment:
+  #    - MONGO_INITDB_ROOT_USERNAME=admin
+  #    - MONGO_INITDB_ROOT_PASSWORD=123
+  #    - MONGO_INITDB_DATABASE=mainDB
 
   flask:
     build: ./map
     container_name: bot_flask
     command: uwsgi --ini ./conf/uwsgi.ini
     volumes:
-    - ./map:/app
+      - ./map:/app
     ports:
-    - "5000:5000"
+      - "5000:5000"
     depends_on:
-    - mongo
+      - mongo
+    env_file:
+      - .secrets
 
   bot:
     build: route_time
     container_name: bot_bot
     command: python main.py
     volumes:
-    - ./route_time:/route_time
+      - ./route_time:/route_time
     depends_on:
-    - flask
+      - flask
+    env_file:
+      - .secrets
 
   nginx:
     image: nginx:latest
     container_name: bot_nginx
     ports:
-    - "80:80"
+      - "80:80"
     volumes:
-    - ./map/static:/app/static
-    - ./nginx:/etc/nginx/conf.d
+      - ./map/static:/app/static
+      - ./nginx:/etc/nginx/conf.d
     depends_on:
-    - flask
+      - flask
 
   chrome:
     image: selenium/standalone-chrome:latest
     container_name: bot_chrome
     ports:
-    - 4444:4444
+      - 4444:4444
     volumes:
-    - /dev/shm:/dev/shm
+      - /dev/shm:/dev/shm
     depends_on:
-    - flask
+      - flask
 
 volumes:
   mongo-data:
